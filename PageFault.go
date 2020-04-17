@@ -9,6 +9,8 @@ const NUM_FRAMES int = 5
 
 var unique_time_ct int = 0
 
+/*** DATATYPES ***/
+
 type Page struct {
 	pageNumber int
 	frameNumber int
@@ -22,9 +24,13 @@ type Frame struct {
 	lastReference int
 }
 
+/*** MAIN ***/
+
 func main() {
 	fmt.Println("hi")
 }
+
+/*** INITIALIZATION ***/
 
 func init_pt(pg *[NUM_PAGES]Page) {
 	for i := 0; i < len(pg); i++ {
@@ -37,6 +43,8 @@ func init_ft(ft *[NUM_FRAMES]Frame) {
 		ft[i] = Frame{i, -1, 0, -1, -1}
 	}
 }
+
+/*** UTILITY FUNCTIONS ***/
 
 func unique_time(val *int) int {
 	unique_time_ct++
