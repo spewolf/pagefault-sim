@@ -32,6 +32,12 @@ func init_pt(pg *[NUM_PAGES]Page) {
 	}
 }
 
+func init_ft(ft *[NUM_FRAMES]Frame) {
+	for i := 0; i < len(ft); i++ {
+		ft[i] = Frame{i, -1, 0, -1, -1}
+	}
+}
+
 func unique_time(val *int) int {
 	unique_time_ct++
 	*val = unique_time_ct
