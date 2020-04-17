@@ -4,15 +4,37 @@ import (
 	"fmt"
 )
 
-var unique_time_ct int = 0;
+const NUM_PAGES int = 9
+const NUM_FRAMES int = 5
+
+var unique_time_ct int = 0
+
+type Page struct {
+	pageNumber int
+	frameNumber int
+}
+
+type Frame struct {
+	frameNumber int
+	pageNumber int
+	faultCt int
+	lastAllocation int
+	lastReference int
+}
 
 func main() {
-	fmt.Println("hi");
+	fmt.Println("hi")
+}
+
+func init_pt(pg *[NUM_PAGES]Page) {
+	for i := 0; i < len(pg); i++ {
+		pg[i] = Page{i, -1}
+	}
 }
 
 func unique_time(val *int) int {
-	unique_time_ct++;
-	*val = unique_time_ct;
-	return *val;
+	unique_time_ct++
+	*val = unique_time_ct
+	return *val
 }
 
