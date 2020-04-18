@@ -84,6 +84,22 @@ func accessPage(pageIndex int, pt [NUM_PAGES]Page, ft *[NUM_FRAMES]Frame) bool {
 	return true
 }
 
+func handlePageFault(pageIndex int, pt *[NUM_PAGES]Page, ft *[NUM_FRAMES]Frame, 
+	                 pra PageReplacementAlgorithm) {
+	// Find frame to insert page into
+	victim, _ := findEmptyFrame(*ft)
+	if victim == -1 {
+		victim = pra(*ft)
+		pt[ft[victim].pageNumber].frameNumber = -1
+	}
+
+	// Replace page
+	ft[victim].faultCt++
+	ft[victim].pageNumber = pageIndex
+	unique_time(&ft[victim].lastAllocation)
+	pt[pageIndex].frameNumber = victim
+}
+
 // 80 long distribution for consistent benchmark if needed
 // if a static distribution is not needed a generator should be used
 func staticDistribution80() [80]int {

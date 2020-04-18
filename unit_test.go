@@ -161,3 +161,44 @@ func TestFIFO(t *testing.T) {
 		         victim, NUM_FRAMES - 1)
 	}
 }
+
+// func handlePageFault
+
+func TestHandlePageFault_empty(t *testing.T) {
+	// mock page exists 
+	pt := [NUM_PAGES]Page{}
+	init_pt(&pt)
+	ft := [NUM_FRAMES]Frame{}
+	init_ft(&ft)
+	unique_time_ct = 0
+
+	handlePageFault(2, &pt, &ft, fifo)
+
+	// check that page was inserted
+	if !accessPage(2, pt, &ft) {
+		t.Errorf("handlePageFault did not replace %v", 2)
+	}
+}
+
+func TestHandlePageFault_full_fifo(t *testing.T) {
+	// mock page exists 
+	pt := [NUM_PAGES]Page{}
+	init_pt(&pt)
+	ft := [NUM_FRAMES]Frame{}
+	init_ft(&ft)
+	unique_time_ct = 0
+
+	// mock ascending allocation times so last frame will be used
+	for i := 0; i < NUM_FRAMES; i++ {
+		ft[i].lastAllocation = NUM_FRAMES - i
+		ft[i].pageNumber = 1
+	}
+
+
+	handlePageFault(2, &pt, &ft, fifo)
+
+	// check that page was inserted
+	if pt[2].frameNumber != NUM_FRAMES - 1 {
+		t.Errorf("Handle Pagefault used pra incorrectly")
+	}
+}
