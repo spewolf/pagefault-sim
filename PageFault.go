@@ -100,6 +100,21 @@ func handlePageFault(pageIndex int, pt *[NUM_PAGES]Page, ft *[NUM_FRAMES]Frame,
 	pt[pageIndex].frameNumber = victim
 }
 
+func simulate(ref int, pt *[NUM_PAGES]Page, ft *[NUM_FRAMES]Frame, 
+	          pra PageReplacementAlgorithm) error {
+	// access page and handle pagefault if it occurs
+	if !accessPage(ref, *pt, ft) {
+		handlePageFault(ref, pt, ft, pra)
+
+		// check for error
+		if !accessPage(ref, *pt, ft) {
+			return errors.New("handlePageFault failed in simulate")
+		}
+	}
+
+	return nil
+}
+
 // 80 long distribution for consistent benchmark if needed
 // if a static distribution is not needed a generator should be used
 func staticDistribution80() [80]int {

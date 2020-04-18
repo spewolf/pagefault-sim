@@ -202,3 +202,23 @@ func TestHandlePageFault_full_fifo(t *testing.T) {
 		t.Errorf("Handle Pagefault used pra incorrectly")
 	}
 }
+
+// func simulate
+
+func TestSimulate(t *testing.T) {
+	// mock page exists 
+	pt := [NUM_PAGES]Page{}
+	init_pt(&pt)
+	ft := [NUM_FRAMES]Frame{}
+	init_ft(&ft)
+	unique_time_ct = 0
+	
+	for i := 0; i < 3; i++ {
+		simulate(i, &pt, &ft, fifo)
+	}
+
+	if pt[2] != (Page{2, 2}) || ft[2] != (Frame{2, 2, 1, 5, 6}) {
+		t.Errorf("Simulate failed, post state was PageTable: %v, FrameTable: %v", 
+		         pt, ft)
+	}
+}
