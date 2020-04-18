@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"errors"
 )
 
 const NUM_PAGES int = 9
@@ -45,6 +46,15 @@ func init_ft(ft *[NUM_FRAMES]Frame) {
 }
 
 /*** UTILITY FUNCTIONS ***/
+
+func findEmptyFrame(ft [NUM_FRAMES]Frame) (int, error) {
+	for i := 0; i < NUM_FRAMES; i++ {
+		if ft[i].pageNumber == -1 {
+			return i, nil
+		}
+	}
+	return -1, errors.New("No empty frames available")
+}
 
 func unique_time(val *int) int {
 	unique_time_ct++
