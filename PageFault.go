@@ -26,6 +26,8 @@ type Frame struct {
 	lastReference int
 }
 
+type PageReplacementAlgorithm func(ft [NUM_FRAMES]Frame) int
+
 /*** MAIN ***/
 
 func main() {
@@ -44,6 +46,18 @@ func init_ft(ft *[NUM_FRAMES]Frame) {
 	for i := 0; i < len(ft); i++ {
 		ft[i] = Frame{i, -1, 0, -1, -1}
 	}
+}
+
+/*** PAGE REPLACEMENT ALGORITHMS ***/
+
+func fifo(ft [NUM_FRAMES]Frame) int {
+	victim := 0
+	for i := 1; i < NUM_FRAMES; i++ {
+		if ft[i].lastAllocation < ft[victim].lastAllocation {
+			victim = i
+		}
+	}
+	return victim
 }
 
 /*** UTILITY FUNCTIONS ***/

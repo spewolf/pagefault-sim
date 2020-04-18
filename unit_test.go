@@ -142,3 +142,22 @@ func TestAccessPage_pageFault(t *testing.T) {
 		t.Errorf("Access page returned true and expected false")
 	}
 }
+
+// func fifo
+
+func TestFIFO(t *testing.T) {
+	ft := [NUM_FRAMES]Frame{}
+	init_ft(&ft)
+
+	// mock ascending allocation times so last frame will be used
+	for i := 0; i < NUM_FRAMES; i++ {
+		ft[i].lastAllocation = NUM_FRAMES - i;
+	}
+
+	victim := fifo(ft)
+
+	if victim != NUM_FRAMES - 1 {
+		t.Errorf("fifo algorithm returned %v, expected %v", 
+		         victim, NUM_FRAMES - 1)
+	}
+}
