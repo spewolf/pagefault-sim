@@ -5,6 +5,7 @@ import (
 	"errors"
 )
 
+// Both must be at least len >= 3 to run tests
 const NUM_PAGES int = 9
 const NUM_FRAMES int = 5
 
@@ -54,6 +55,16 @@ func findEmptyFrame(ft [NUM_FRAMES]Frame) (int, error) {
 		}
 	}
 	return -1, errors.New("No empty frames available")
+}
+
+func accessPage(pageIndex int, pt [NUM_PAGES]Page, ft *[NUM_FRAMES]Frame) bool {
+	// check that page exists in memory
+	if pt[pageIndex].frameNumber == -1 {
+		return false;
+	}
+	// update time (also simulates reference)
+	unique_time(&ft[pt[pageIndex].frameNumber].lastReference)
+	return true
 }
 
 func unique_time(val *int) int {

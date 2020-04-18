@@ -4,6 +4,8 @@ import(
 	"testing"
 )
 
+// func unique_time
+
 func TestUniqueTime(t *testing.T) {
 	unique_time_ct = 0;
 
@@ -16,6 +18,8 @@ func TestUniqueTime(t *testing.T) {
 		t.Errorf("f_time not working, set value to %d\n", myTime);
 	}
 }
+
+// func init_pt && init_ft
 
 func TestPageTableInit(t *testing.T) {
 	pt := [NUM_PAGES]Page{};
@@ -40,6 +44,8 @@ func TestFrameTableInit(t *testing.T) {
 		t.Errorf("Frame initialization returned unexpected value %v\n", ft)
 	}
 }
+
+// func findEmptyFrame
 
 func TestFindEmptyFrame_empty(t *testing.T) {
 	// create empty frame table
@@ -82,5 +88,57 @@ func TestFindEmptyFrame_full(t *testing.T) {
 	if vf_index != -1 {
 		t.Errorf("FindEmptyFrame returned %v, expected %v", 
 		         vf_index, -1)
+	}
+}
+
+// func accessPage
+
+func TestAccessPage_exists(t *testing.T) {
+	// mock page exists 
+	pt := [NUM_PAGES]Page{}
+	init_pt(&pt)
+	ft := [NUM_FRAMES]Frame{}
+	init_ft(&ft)
+	unique_time_ct = 0
+
+	pt[2] = Page{2, 1}
+	ft[1] = Frame{1, 2, 0, -1, -1}
+
+	// run accesspage
+	if !accessPage(2, pt, &ft) {
+		t.Errorf("Access page did not find page, expected to find page")
+	}
+}
+
+func TestAccessPage_timeUpdate(t *testing.T) {
+	// mock page exists 
+	pt := [NUM_PAGES]Page{}
+	init_pt(&pt)
+	ft := [NUM_FRAMES]Frame{}
+	init_ft(&ft)
+	unique_time_ct = 0
+
+	// run access page
+	pt[2] = Page{2, 1}
+	ft[1] = Frame{1, 2, 0, -1, -1}
+	accessPage(2, pt, &ft)
+
+	// check if time was updated
+	if ft[1].lastReference != 1 {
+		t.Errorf("Access page did not update page")
+	}
+}
+
+func TestAccessPage_pageFault(t *testing.T) {
+	// mock page exists 
+	pt := [NUM_PAGES]Page{}
+	init_pt(&pt)
+	ft := [NUM_FRAMES]Frame{}
+	init_ft(&ft)
+	unique_time_ct = 0
+
+	// check that accessPage fails
+	if accessPage(2, pt, &ft) {
+		t.Errorf("Access page returned true and expected false")
 	}
 }
