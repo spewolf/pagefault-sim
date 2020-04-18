@@ -8,6 +8,7 @@ import (
 // Both must be at least len >= 3 to run tests
 const NUM_PAGES int = 9
 const NUM_FRAMES int = 5
+const NUM_REFERENCES int = 80
 
 var unique_time_ct int = 0
 
@@ -27,6 +28,8 @@ type Frame struct {
 }
 
 type PageReplacementAlgorithm func(ft [NUM_FRAMES]Frame) int
+
+type ReferenceGenerator func() [NUM_REFERENCES]int
 
 /*** MAIN ***/
 
@@ -79,6 +82,16 @@ func accessPage(pageIndex int, pt [NUM_PAGES]Page, ft *[NUM_FRAMES]Frame) bool {
 	// update time (also simulates reference)
 	unique_time(&ft[pt[pageIndex].frameNumber].lastReference)
 	return true
+}
+
+// 80 long distribution for consistent benchmark if needed
+// if a static distribution is not needed a generator should be used
+func staticDistribution80() [80]int {
+	dist := [80]int{1, 2, 3, 4, 5, 6, 7, 2, 1, 2, 1, 2, 1, 2, 6, 3, 4, 6, 3, 4, 6,
+		            2, 1, 2, 1, 8, 7, 9, 8, 7, 9, 8, 7, 9, 3, 4, 3, 4, 1, 4, 1, 5,
+		            6, 7, 8, 7, 8, 9, 7, 8, 3, 3, 4, 3, 5, 3, 5, 3, 2, 1, 2, 1, 5,
+					6, 3, 2, 7, 3, 9, 5, 6, 7, 8, 7, 8, 9, 1, 2, 1, 3}
+	return dist
 }
 
 func unique_time(val *int) int {
