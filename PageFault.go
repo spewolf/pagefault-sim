@@ -35,6 +35,35 @@ type ReferenceGenerator func() [NUM_REFERENCES]int
 
 func main() {
 	fmt.Println("hi")
+	testAlgorithm(fifo, staticDistribution80, "Fifo")
+}
+
+/*** DEMO ***/
+
+func testAlgorithm(pra PageReplacementAlgorithm, gen ReferenceGenerator, 
+	               name string) {
+	pt := [NUM_PAGES]Page{}
+	init_pt(&pt)
+	ft := [NUM_FRAMES]Frame{}
+	init_ft(&ft)
+	unique_time_ct = 0
+
+	refs := gen()
+
+	for i := 0; i < NUM_REFERENCES; i++ {
+		//TODO Remove the -1 from this statement, it is due to incompatability with class data
+		simulate(refs[i]-1, &pt, &ft, pra)
+	}
+
+	printResults(ft, name)
+}
+
+func printResults(ft [NUM_FRAMES]Frame, alg string) {
+	fmt.Printf("%s:\n", alg)
+	
+	for i := 0; i < NUM_FRAMES; i++ {
+		fmt.Printf("Frame %d: %d page faults\n", i, ft[i].faultCt)
+	}
 }
 
 /*** INITIALIZATION ***/
