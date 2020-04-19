@@ -162,6 +162,25 @@ func TestFIFO(t *testing.T) {
 	}
 }
 
+// func lru
+
+func TestLRU(t *testing.T) {
+	ft := [NUM_FRAMES]Frame{}
+	init_ft(&ft)
+
+	// mock ascending allocation times so last frame will be used
+	for i := 0; i < NUM_FRAMES; i++ {
+		ft[i].lastReference = NUM_FRAMES - i;
+	}
+
+	victim := lru(ft)
+
+	if victim != NUM_FRAMES - 1 {
+		t.Errorf("lru algorithm returned %v, expected %v", 
+		         victim, NUM_FRAMES - 1)
+	}
+}
+
 // func handlePageFault
 
 func TestHandlePageFault_empty(t *testing.T) {

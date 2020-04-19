@@ -34,8 +34,8 @@ type ReferenceGenerator func() [NUM_REFERENCES]int
 /*** MAIN ***/
 
 func main() {
-	fmt.Println("hi")
 	testAlgorithm(fifo, staticDistribution80, "Fifo")
+	testAlgorithm(lru, staticDistribution80, "Lru")
 }
 
 /*** DEMO ***/
@@ -86,6 +86,16 @@ func fifo(ft [NUM_FRAMES]Frame) int {
 	victim := 0
 	for i := 1; i < NUM_FRAMES; i++ {
 		if ft[i].lastAllocation < ft[victim].lastAllocation {
+			victim = i
+		}
+	}
+	return victim
+}
+
+func lru(ft [NUM_FRAMES]Frame) int {
+	victim := 0
+	for i := 1; i < NUM_FRAMES; i++ {
+		if ft[i].lastReference < ft[victim].lastReference {
 			victim = i
 		}
 	}
