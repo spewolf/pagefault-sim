@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"errors"
+	"math/rand"
+	"time"
 )
 
 // Both must be at least len >= 3 to run tests
@@ -29,18 +31,18 @@ type Frame struct {
 
 type PageReplacementAlgorithm func(ft [NUM_FRAMES]Frame) int
 
-type ReferenceGenerator func() [NUM_REFERENCES]int
-
 /*** MAIN ***/
 
 func main() {
-	testAlgorithm(fifo, staticDistribution80, "Fifo")
-	testAlgorithm(lru, staticDistribution80, "Lru")
+	dist := randomDistribution()
+
+	testAlgorithm(fifo, dist, "\nFIFO")
+	testAlgorithm(lru, dist, "\nLRU")
 }
 
 /*** DEMO ***/
 
-func testAlgorithm(pra PageReplacementAlgorithm, gen ReferenceGenerator, 
+func testAlgorithm(pra PageReplacementAlgorithm, dist [NUM_REFERENCES]int, 
 	               name string) {
 	pt := [NUM_PAGES]Page{}
 	init_pt(&pt)
@@ -48,11 +50,9 @@ func testAlgorithm(pra PageReplacementAlgorithm, gen ReferenceGenerator,
 	init_ft(&ft)
 	unique_time_ct = 0
 
-	refs := gen()
-
 	for i := 0; i < NUM_REFERENCES; i++ {
 		//TODO Remove the -1 from this statement, it is due to incompatability with class data
-		simulate(refs[i]-1, &pt, &ft, pra)
+		simulate(dist[i], &pt, &ft, pra)
 	}
 
 	printResults(ft, name)
@@ -154,13 +154,12 @@ func simulate(ref int, pt *[NUM_PAGES]Page, ft *[NUM_FRAMES]Frame,
 	return nil
 }
 
-// 80 long distribution for consistent benchmark if needed
-// if a static distribution is not needed a generator should be used
-func staticDistribution80() [80]int {
-	dist := [80]int{1, 2, 3, 4, 5, 6, 7, 2, 1, 2, 1, 2, 1, 2, 6, 3, 4, 6, 3, 4, 6,
-		            2, 1, 2, 1, 8, 7, 9, 8, 7, 9, 8, 7, 9, 3, 4, 3, 4, 1, 4, 1, 5,
-		            6, 7, 8, 7, 8, 9, 7, 8, 3, 3, 4, 3, 5, 3, 5, 3, 2, 1, 2, 1, 5,
-					6, 3, 2, 7, 3, 9, 5, 6, 7, 8, 7, 8, 9, 1, 2, 1, 3}
+func randomDistribution() [NUM_REFERENCES]int {
+	dist := [NUM_REFERENCES]int{}
+	rand.Seed(time.Now().Unix())
+	for i := 0; i < NUM_REFERENCES; i++ {
+		dist[i] = rand.Int() % NUM_PAGES
+	}
 	return dist
 }
 
