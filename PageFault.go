@@ -5,12 +5,12 @@ import (
 	"errors"
 	"math/rand"
 	"time"
+	"flag"
 )
 
 // Both must be at least len >= 3 to run tests
 const NUM_PAGES int = 9
 const NUM_FRAMES int = 5
-const NUM_REFERENCES int = 80
 
 var unique_time_ct int = 0
 
@@ -34,23 +34,25 @@ type PageReplacementAlgorithm func(ft [NUM_FRAMES]Frame) int
 /*** MAIN ***/
 
 func main() {
-	dist := randomDistribution()
+	refNumPtr := flag.Int("ref", 80, "number of references")
+	
+	dist := randomDistribution(*refNumPtr)
 
-	testAlgorithm(fifo, dist, "\nFIFO")
-	testAlgorithm(lru, dist, "\nLRU")
+	testAlgorithm(fifo, dist, *refNumPtr, "\nFIFO")
+	testAlgorithm(lru, dist, *refNumPtr, "\nLRU")
 }
 
 /*** DEMO ***/
 
-func testAlgorithm(pra PageReplacementAlgorithm, dist [NUM_REFERENCES]int, 
-	               name string) {
+func testAlgorithm(pra PageReplacementAlgorithm, dist []int, 
+	               len int, name string) {
 	pt := [NUM_PAGES]Page{}
 	init_pt(&pt)
 	ft := [NUM_FRAMES]Frame{}
 	init_ft(&ft)
 	unique_time_ct = 0
 
-	for i := 0; i < NUM_REFERENCES; i++ {
+	for i := 0; i < len; i++ {
 		//TODO Remove the -1 from this statement, it is due to incompatability with class data
 		simulate(dist[i], &pt, &ft, pra)
 	}
@@ -154,11 +156,11 @@ func simulate(ref int, pt *[NUM_PAGES]Page, ft *[NUM_FRAMES]Frame,
 	return nil
 }
 
-func randomDistribution() [NUM_REFERENCES]int {
-	dist := [NUM_REFERENCES]int{}
+func randomDistribution(len int) []int {
+	dist := make([]int, 0, len)
 	rand.Seed(time.Now().Unix())
-	for i := 0; i < NUM_REFERENCES; i++ {
-		dist[i] = rand.Int() % NUM_PAGES
+	for i := 0; i < len; i++ {
+		dist = append(dist, rand.Int() % NUM_PAGES)
 	}
 	return dist
 }
