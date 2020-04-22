@@ -35,7 +35,8 @@ type PageReplacementAlgorithm func(ft [NUM_FRAMES]Frame) int
 
 func main() {
 	refNumPtr := flag.Int("ref", 80, "number of references")
-	
+	flag.Parse()
+
 	dist := randomDistribution(*refNumPtr)
 
 	testAlgorithm(fifo, dist, *refNumPtr, "\nFIFO")
